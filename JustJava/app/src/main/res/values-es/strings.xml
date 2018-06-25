@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Just Java</string>
+    <string name="total_label">Total: </string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="name_label">Nombre:</string>
+    <string name="quantity_label">Cantidad: </string>
+    <string name="topping_label">Toppings: </string>
+    <string name="thank_you">Gracias!</string>
+    <string name="whipped_cream_label">Mais Cremé ?</string>
+    <string name="chocolate_label">Mais Chocolate ?</string>
+    <string name="order_summary_title">Order Summary from Just Java</string>
+</resources>

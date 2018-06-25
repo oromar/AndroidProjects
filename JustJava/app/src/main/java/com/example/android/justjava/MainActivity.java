@@ -8,9 +8,13 @@
 
 package com.example.android.justjava;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
@@ -21,6 +25,11 @@ import java.text.NumberFormat;
 public class MainActivity extends AppCompatActivity {
 
     private int quantity = 0;
+    private boolean hasWhippedCream = false;
+    private boolean hasChocolate = false;
+    private static final int COFFEE_PRICE = 5;
+    private static final int CHOCOLATE_PRICE = 2;
+    private static final int WHIPPED_CREAM_PRICE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,41 +38,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void increment(View view) {
-        display(++quantity);
+        displayQuantity(++quantity);
     }
 
     public void decrement(View view) {
-        display(quantity > 0 ? --quantity : 0);
+        displayQuantity(quantity > 0 ? --quantity : 0);
     }
 
     /**
      * This method is called when the order button is clicked.
      */
     public void submitOrder(View view) {
-        display(quantity);
-        displayPrice(quantity * 5);
+        createOrderSummary(calculatePrice());
+    }
+
+    public void toggleWhippedCream(View view) {
+        hasWhippedCream = ((CheckBox)view).isChecked();
+    }
+
+    public void toogleChocolate(View view) {
+        hasChocolate = ((CheckBox)view).isChecked();
+    }
+
+    private int calculatePrice() {
+        return (COFFEE_PRICE +
+               (hasWhippedCream ? WHIPPED_CREAM_PRICE : 0) +
+               (hasChocolate ? CHOCOLATE_PRICE : 0)) * quantity;
     }
 
     /**
      * This method displays the given quantity value on the screen.
      */
-    private void display(int number) {
+    private void displayQuantity(int number) {
         TextView quantityTextView = findViewById(R.id.quantity_text_view);
-        quantityTextView.setText("" + number);
+        quantityTextView.setText(String.format("%d", number));
     }
 
     /**
      * This method displays the given price on the screen.
      */
-    private void displayPrice(int number) {
-        TextView priceTextView = findViewById(R.id.price_text_view);
-        priceTextView.setText(getString(R.string.total_label) +
-                              NumberFormat.getCurrencyInstance().format(number) +
-                              getString(R.string.thank_you));
+    private void createOrderSummary(int number) {
+        TextView orderSummaryTextView = findViewById(R.id.order_summary_text_view);
+        EditText editTextName = findViewById(R.id.name_edit_text);
+        String name = editTextName.getText().toString();
+        orderSummaryTextView.setText(
+            String.format("%s %s\n%s\n%s %s\n%s %s\n%s",
+            getString(R.string.name_label),
+            name,
+            String.format("%s %s\n%s %s",
+                           getString(R.string.whipped_cream_label), hasWhippedCream ? getString(R.string.yes) : getString(R.string.no),
+                           getString(R.string.chocolate_label), hasChocolate ? getString(R.string.yes) : getString(R.string.no)),
+            getString(R.string.quantity_label),
+            String.valueOf(quantity),
+            getString(R.string.total_label),
+            NumberFormat.getCurrencyInstance().format(number),
+            getString(R.string.thank_you)));
+        sendEmail();
     }
 
-    private void displayMessage(String message) {
-        TextView priceTextView = (TextView) findViewById(R.id.price_text_view);
-        priceTextView.setText(message);
+    private void sendEmail() {
+        TextView orderSummaryTextView = findViewById(R.id.order_summary_text_view);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"oromar.melo@gmail.com"});
+        emailIntent.putExtra(Intent.EXTRA_CC, new String[] {""});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.order_summary_title));
+        emailIntent.putExtra(Intent.EXTRA_TEXT, orderSummaryTextView.getText());
+        startActivity(emailIntent);
     }
 }
