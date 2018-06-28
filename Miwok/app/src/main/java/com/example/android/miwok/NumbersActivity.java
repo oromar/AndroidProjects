@@ -13,6 +13,8 @@ import java.util.List;
 
 public class NumbersActivity extends AppCompatActivity {
 
+    private static final String BACKGROUND_COLOR = "#FD8E09";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -33,7 +35,7 @@ public class NumbersActivity extends AppCompatActivity {
                 new Word("ten", "na’aacha", R.drawable.number_ten)
         });
 
-        TranslatableAdapter adapter = new TranslatableAdapter(this, wordList);
+        TranslatableAdapter adapter = new TranslatableAdapter(this, wordList, BACKGROUND_COLOR);
 
         ListView listView = (ListView) findViewById(R.id.list);
 

@@ -1,5 +1,6 @@
 package com.example.android.miwok;
 
+import android.os.BadParcelableException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
@@ -12,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FamilyActivity extends AppCompatActivity {
+
+    private static final String BACKGROUND_COLOR = "#379237";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,7 @@ public class FamilyActivity extends AppCompatActivity {
                 new Word("grandfather", "paapa" , R.drawable.family_grandfather)
         });
 
-        TranslatableAdapter adapter = new TranslatableAdapter(this, words);
+        TranslatableAdapter adapter = new TranslatableAdapter(this, words, BACKGROUND_COLOR);
 
         ListView listView = (ListView) findViewById(R.id.list);
 

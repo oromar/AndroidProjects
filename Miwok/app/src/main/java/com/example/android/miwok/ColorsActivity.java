@@ -13,6 +13,8 @@ import java.util.List;
 
 public class ColorsActivity extends AppCompatActivity {
 
+    private static final String BACKGROUND_COLOR = "#8800A0";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -31,7 +33,7 @@ public class ColorsActivity extends AppCompatActivity {
               new Word("mustard yellow", "chiwiiṭә", R.drawable.color_mustard_yellow)
         });
 
-        TranslatableAdapter adapter = new TranslatableAdapter(this, words);
+        TranslatableAdapter adapter = new TranslatableAdapter(this, words, BACKGROUND_COLOR);
 
         ListView  listView = (ListView)findViewById(R.id.list);
 

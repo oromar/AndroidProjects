@@ -13,6 +13,8 @@ import java.util.List;
 
 public class PhrasesActivity extends AppCompatActivity {
 
+    private static final String BACKGROUND_COLOR = "#16AFCA";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -34,7 +36,7 @@ public class PhrasesActivity extends AppCompatActivity {
         });
 
 
-        TranslatableAdapter adapter = new TranslatableAdapter(this, words);
+        TranslatableAdapter adapter = new TranslatableAdapter(this, words, BACKGROUND_COLOR);
 
         ListView listView = (ListView)findViewById(R.id.list);
 
