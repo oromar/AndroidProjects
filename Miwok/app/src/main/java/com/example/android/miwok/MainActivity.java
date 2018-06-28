@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         // Set the content of the activity to use the activity_main.xml layout file
@@ -35,52 +36,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addListeners() {
 
-        ((TextView)findViewById(R.id.numbers)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.onClick(v);
-            }
-        });
+        findViewById(R.id.numbers).setOnClickListener(this);
 
-        ((TextView)findViewById(R.id.family)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.onClick(v);
-            }
-        });
+        findViewById(R.id.family).setOnClickListener(this);
 
-        ((TextView)findViewById(R.id.colors)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.onClick(v);
-            }
-        });
+        findViewById(R.id.colors).setOnClickListener(this);
 
-        ((TextView)findViewById(R.id.phrases)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.onClick(v);
-            }
-        });
+        findViewById(R.id.phrases).setOnClickListener(this);
     }
 
+    @Override
     public void onClick(View view) {
+
             Intent intent = null;
+
             switch (view.getId()){
+
                 case R.id.numbers:
                     intent = new Intent(this, NumbersActivity.class);
                     break;
+
                 case R.id.family:
                     intent = new Intent(this, FamilyActivity.class);
                     break;
+
                 case R.id.colors:
                     intent = new Intent(this, ColorsActivity.class);
                     break;
+
                 case R.id.phrases:
                     intent = new Intent(this, PhrasesActivity.class);
                     break;
             }
-
         startActivity(intent);
     }
 }
