@@ -4,17 +4,18 @@ public class Word implements Translatable {
 
     private String mDefaultTranslation;
     private String mMiwokTranslation;
-    private int mIconPath;
+    private int mIconRes;
+    private int mAudioRes;
 
-    public Word(String defaultTranslation, String miwokTranslation) {
+    public Word(String defaultTranslation, String miwokTranslation, int iconRes, int audioRes) {
         this.mDefaultTranslation = defaultTranslation;
         this.mMiwokTranslation = miwokTranslation;
+        this.mIconRes = iconRes;
+        this.mAudioRes = audioRes;
     }
 
-    public Word(String defaultTranslation, String miwokTranslation, int iconPath) {
-        this.mDefaultTranslation = defaultTranslation;
-        this.mMiwokTranslation = miwokTranslation;
-        this.mIconPath = iconPath;
+    public Word(String defaultTranslation, String miwokTranslation, int audioRes) {
+        this(defaultTranslation, miwokTranslation, 0, audioRes);
     }
 
     @Override
@@ -29,6 +30,9 @@ public class Word implements Translatable {
 
     @Override
     public int getIcon() {
-        return mIconPath;
+        return mIconRes;
     }
+
+    @Override
+    public int getAudio() { return mAudioRes; }
 }

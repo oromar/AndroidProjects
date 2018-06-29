@@ -5,4 +5,5 @@ public interface Translatable {
     String getDefaultTranslation();
     String getMiwokTranslation();
     int getIcon();
+    int getAudio();
 }
