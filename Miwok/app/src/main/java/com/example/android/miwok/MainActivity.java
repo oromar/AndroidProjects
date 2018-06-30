@@ -17,11 +17,20 @@ package com.example.android.miwok;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import com.example.android.miwok.com.example.android.miwok.adapters.FragmentAdapter;
+
+public class MainActivity extends AppCompatActivity {
+
+    private ViewPager mPager;
+    private PagerAdapter mPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,43 +40,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set the content of the activity to use the activity_main.xml layout file
         setContentView(R.layout.activity_main);
 
-        addListeners();
-    }
+        mPager = (ViewPager) findViewById(R.id.pager);
 
-    private void addListeners() {
+        mPageAdapter = new FragmentAdapter(getSupportFragmentManager());
 
-        findViewById(R.id.numbers).setOnClickListener(this);
+        mPager.setAdapter(mPageAdapter);
 
-        findViewById(R.id.family).setOnClickListener(this);
+        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
 
-        findViewById(R.id.colors).setOnClickListener(this);
-
-        findViewById(R.id.phrases).setOnClickListener(this);
+        tabs.setupWithViewPager(mPager);
     }
 
     @Override
-    public void onClick(View view) {
+    public void onBackPressed() {
 
-            Intent intent = null;
+        if (mPager.getCurrentItem() == 0) {
 
-            switch (view.getId()){
+            super.onBackPressed();
 
-                case R.id.numbers:
-                    intent = new Intent(this, NumbersActivity.class);
-                    break;
+        } else {
 
-                case R.id.family:
-                    intent = new Intent(this, FamilyActivity.class);
-                    break;
-
-                case R.id.colors:
-                    intent = new Intent(this, ColorsActivity.class);
-                    break;
-
-                case R.id.phrases:
-                    intent = new Intent(this, PhrasesActivity.class);
-                    break;
-            }
-        startActivity(intent);
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+        }
     }
 }

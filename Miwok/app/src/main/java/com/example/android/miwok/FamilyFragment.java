@@ -1,13 +1,14 @@
 package com.example.android.miwok;
 
-import android.os.BadParcelableException;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ListView;
-import 	android.support.v4.app.NavUtils;
 
 import com.example.android.miwok.com.example.android.miwok.adapters.TranslatableAdapter;
 import com.example.android.miwok.com.example.android.miwok.models.Translatable;
@@ -16,16 +17,25 @@ import com.example.android.miwok.com.example.android.miwok.models.Word;
 import java.util.Arrays;
 import java.util.List;
 
-public class FamilyActivity extends AppCompatActivity {
+public class FamilyFragment extends Fragment {
 
     private static final String BACKGROUND_COLOR = "#379237";
 
+    public FamilyFragment() {
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
+        return inflater.inflate(R.layout.fragment_family, container, false);
+    }
 
-        setContentView(R.layout.activity_family);
+    @Override
+
+    public void onResume() {
+
+        super.onResume();
 
         List<Translatable> words = Arrays.asList(new Translatable[] {
                 new Word("father", "әpә" , R.drawable.family_father, R.raw.family_mother),
@@ -40,24 +50,10 @@ public class FamilyActivity extends AppCompatActivity {
                 new Word("grandfather", "paapa" , R.drawable.family_grandfather, R.raw.family_grandfather)
         });
 
-        TranslatableAdapter adapter = new TranslatableAdapter(this, words, BACKGROUND_COLOR);
+        TranslatableAdapter adapter = new TranslatableAdapter(getActivity(), words, BACKGROUND_COLOR);
 
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView = (ListView)getActivity().findViewById(R.id.listFamily);
 
         listView.setAdapter(adapter);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-
-                NavUtils.navigateUpFromSameTask(this);
-
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

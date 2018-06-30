@@ -1,10 +1,14 @@
 package com.example.android.miwok;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
-import android.support.v4.app.NavUtils;
 
 import com.example.android.miwok.com.example.android.miwok.adapters.TranslatableAdapter;
 import com.example.android.miwok.com.example.android.miwok.models.Translatable;
@@ -13,16 +17,26 @@ import com.example.android.miwok.com.example.android.miwok.models.Word;
 import java.util.Arrays;
 import java.util.List;
 
-public class PhrasesActivity extends AppCompatActivity {
+
+public class PhrasesFragment extends Fragment {
 
     private static final String BACKGROUND_COLOR = "#16AFCA";
 
+    public PhrasesFragment() {
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
+        return inflater.inflate(R.layout.fragment_phrases, container, false);
+    }
 
-        setContentView(R.layout.activity_phrases);
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
 
         List<Translatable> words = Arrays.asList(new Translatable[] {
                 new Word("Where are you going?", "minto wuksus", R.raw.phrase_where_are_you_going),
@@ -37,25 +51,10 @@ public class PhrasesActivity extends AppCompatActivity {
                 new Word("Come here.", "әnni'nem", R.raw.phrase_come_here)
         });
 
+        TranslatableAdapter adapter = new TranslatableAdapter(getActivity(), words, BACKGROUND_COLOR);
 
-        TranslatableAdapter adapter = new TranslatableAdapter(this, words, BACKGROUND_COLOR);
-
-        ListView listView = (ListView)findViewById(R.id.list);
+        ListView listView = (ListView)getActivity().findViewById(R.id.listPhrases);
 
         listView.setAdapter(adapter);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-
-                NavUtils.navigateUpFromSameTask(this);
-
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
