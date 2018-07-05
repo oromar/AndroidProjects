@@ -15,6 +15,8 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -26,22 +28,34 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.android.pets.data.PetContract;
+import com.example.android.pets.data.PetDBHelper;
 
 /**
  * Allows user to create a new pet or edit an existing one.
  */
 public class EditorActivity extends AppCompatActivity {
 
-    /** EditText field to enter the pet's name */
+    /**
+     * EditText field to enter the pet's name
+     */
     private EditText mNameEditText;
 
-    /** EditText field to enter the pet's breed */
+    /**
+     * EditText field to enter the pet's breed
+     */
     private EditText mBreedEditText;
 
-    /** EditText field to enter the pet's weight */
+    /**
+     * EditText field to enter the pet's weight
+     */
     private EditText mWeightEditText;
 
-    /** EditText field to enter the pet's gender */
+    /**
+     * EditText field to enter the pet's gender
+     */
     private Spinner mGenderSpinner;
 
     /**
@@ -86,11 +100,11 @@ public class EditorActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.gender_male))) {
-                        mGender = 1; // Male
+                        mGender = PetContract.PetEntry.GENDER_MALE; // Male
                     } else if (selection.equals(getString(R.string.gender_female))) {
-                        mGender = 2; // Female
+                        mGender = PetContract.PetEntry.GENDER_FEMALE; // Female
                     } else {
-                        mGender = 0; // Unknown
+                        mGender = PetContract.PetEntry.GENDER_UNKNOWN; // Unknown
                     }
                 }
             }
@@ -111,13 +125,43 @@ public class EditorActivity extends AppCompatActivity {
         return true;
     }
 
+    private void savePet() {
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(PetContract.PetEntry.NAME_COLUMN_NAME, mNameEditText.getText().toString());
+
+        contentValues.put(PetContract.PetEntry.BREED_COLUMN_NAME, mBreedEditText.getText().toString());
+
+        contentValues.put(PetContract.PetEntry.GENDER_COLUMN_NAME, mGender);
+
+        contentValues.put(PetContract.PetEntry.WEIGHT_COLUMN_NAME, Integer.valueOf(mWeightEditText.getText().toString()));
+
+        try {
+
+            SQLiteDatabase database = new PetDBHelper(this).getWritableDatabase();
+
+            long id = database.insert(PetContract.PetEntry.TABLE_NAME, null, contentValues);
+
+            Toast.makeText(this, "Pet saved with id: " + id, Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+
+            Toast.makeText(this, "Error with saving pet.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Do nothing for now
+
+                savePet();
+
+                NavUtils.navigateUpFromSameTask(this);
+
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -125,8 +169,9 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
-                // Navigate back to parent activity (CatalogActivity)
+
                 NavUtils.navigateUpFromSameTask(this);
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
