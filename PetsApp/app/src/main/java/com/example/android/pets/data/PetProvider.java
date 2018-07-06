@@ -84,6 +84,8 @@ public class PetProvider extends ContentProvider {
                 throw new IllegalArgumentException("Cannot query unknown URI: " + uri);
         }
 
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return cursor;
     }
 
@@ -91,12 +93,32 @@ public class PetProvider extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
 
-        return null;
+        switch (mUriMatcher.match(uri)) {
+
+            case PET_ID:
+
+                return PetContract.PetEntry.CONTENT_ITEM_TYPE;
+
+            case PETS:
+
+                return PetContract.PetEntry.CONTENT_LIST_TYPE;
+
+            default:
+
+                throw new IllegalArgumentException("Cannot query unknown URI: " + uri);
+        }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
+
+        String name = contentValues.getAsString(PetContract.PetEntry.NAME_COLUMN_NAME);
+
+        if ( name == null || name.isEmpty()) {
+
+            throw new IllegalArgumentException("Name cannot be null!");
+        }
 
         SQLiteDatabase db = mPetDbHelper.getWritableDatabase();
 
@@ -111,19 +133,85 @@ public class PetProvider extends ContentProvider {
                 break;
         }
 
+        getContext().getContentResolver().notifyChange(uri, null);
+
         return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
 
-        return 0;
+        int deletedRows = 0;
+
+        SQLiteDatabase db = mPetDbHelper.getWritableDatabase();
+
+        switch (mUriMatcher.match(uri)) {
+
+            case PET_ID:
+
+                String selection = PetContract.PetEntry._ID + "=?";
+
+                String[] selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+
+                deletedRows = db.delete(PetContract.PetEntry.TABLE_NAME,selection, selectionArgs);
+
+                break;
+
+            case PETS:
+
+                deletedRows = db.delete(PetContract.PetEntry.TABLE_NAME, null, null);
+
+                break;
+
+            default:
+
+                throw new IllegalArgumentException("Cannot query unknown URI: " + uri);
+        }
+
+        if (deletedRows > 0) {
+
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return deletedRows;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
 
-        return 0;
+        int updatedRows = 0;
+
+        SQLiteDatabase db = mPetDbHelper.getWritableDatabase();
+
+        switch (mUriMatcher.match(uri)) {
+
+            case PET_ID:
+
+                String selection = PetContract.PetEntry._ID + "=?";
+
+                String[] selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+
+                updatedRows = db.update(PetContract.PetEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+
+                break;
+
+            case PETS:
+
+                updatedRows = db.update(PetContract.PetEntry.TABLE_NAME, contentValues, null, null);
+
+                break;
+
+            default:
+
+                throw new IllegalArgumentException("Cannot query unknown URI: " + uri);
+        }
+
+        if (updatedRows > 0) {
+
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return updatedRows;
     }
 }
 

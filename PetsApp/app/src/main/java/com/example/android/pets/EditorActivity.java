@@ -15,8 +15,12 @@
  */
 package com.example.android.pets;
 
+import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,7 +44,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 /**
  * Allows user to create a new pet or edit an existing one.
  */
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * EditText field to enter the pet's name
@@ -68,10 +72,30 @@ public class EditorActivity extends AppCompatActivity {
      */
     private int mGender = 0;
 
+    private long mId = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        Uri uri = getIntent().getData();
+
+        if (uri != null) {
+
+            mId = ContentUris.parseId(uri);
+
+            if (mId > 0) {
+
+                this.setTitle("Edit Pet");
+
+                getLoaderManager().initLoader(1, null, this);
+
+            } else {
+
+                this.setTitle("Add a Pet");
+            }
+        }
 
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_pet_name);
@@ -131,25 +155,39 @@ public class EditorActivity extends AppCompatActivity {
 
     private void savePet() {
 
-        ContentValues contentValues = new ContentValues();
+        if (TextUtils.isEmpty(mNameEditText.getText()) &&
+                TextUtils.isEmpty(mBreedEditText.getText()) &&
+                TextUtils.isEmpty(mWeightEditText.getText())) {
 
-        contentValues.put(PetContract.PetEntry.NAME_COLUMN_NAME, mNameEditText.getText().toString());
+            finish();
 
-        contentValues.put(PetContract.PetEntry.BREED_COLUMN_NAME, mBreedEditText.getText().toString());
+        } else {
 
-        contentValues.put(PetContract.PetEntry.GENDER_COLUMN_NAME, mGender);
+            ContentValues contentValues = new ContentValues();
 
-        contentValues.put(PetContract.PetEntry.WEIGHT_COLUMN_NAME, Integer.valueOf(mWeightEditText.getText().toString()));
+            contentValues.put(PetContract.PetEntry.NAME_COLUMN_NAME, mNameEditText.getText().toString());
 
-        try {
+            contentValues.put(PetContract.PetEntry.BREED_COLUMN_NAME, mBreedEditText.getText().toString());
 
-            Uri uri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI, contentValues);
+            contentValues.put(PetContract.PetEntry.GENDER_COLUMN_NAME, mGender);
 
-            Toast.makeText(this, "Pet saved with id: " + ContentUris.parseId(uri), LENGTH_SHORT).show();
+            contentValues.put(PetContract.PetEntry.WEIGHT_COLUMN_NAME, Integer.valueOf(mWeightEditText.getText().toString()));
 
-        } catch (Exception e) {
+            try {
 
-            Toast.makeText(this, "Error with saving pet.", LENGTH_SHORT).show();
+                if (mId > 0) {
+
+                    getContentResolver().update(ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI, mId), contentValues, null, null);
+
+                } else {
+
+                    getContentResolver().insert(PetContract.PetEntry.CONTENT_URI, contentValues);
+                }
+
+            } catch (Exception e) {
+
+                Toast.makeText(this, "Error with saving pet.", LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -167,7 +205,7 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
-                // Do nothing for now
+
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
@@ -177,5 +215,37 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+        return new CursorLoader(this, ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI, mId), PetContract.PetEntry.PROJECTION_COLUMNS, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        cursor.moveToFirst();
+
+        mNameEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.NAME_COLUMN_NAME)));
+
+        mBreedEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.BREED_COLUMN_NAME)));
+
+        mWeightEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.WEIGHT_COLUMN_NAME)));
+
+        mGenderSpinner.setSelection(cursor.getInt(cursor.getColumnIndex(PetContract.PetEntry.GENDER_COLUMN_NAME)));
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        mNameEditText.setText("");
+
+        mBreedEditText.setText("");
+
+        mWeightEditText.setText("");
+
+        mGenderSpinner.setSelection(0);
     }
 }

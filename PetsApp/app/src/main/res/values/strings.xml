@@ -58,4 +58,9 @@
 
     <!-- Label for dropdown menu option if the pet is female [CHAR LIMIT=20] -->
     <string name="gender_female">Female</string>
+
+    <string name="empty_view_title_text">It\'s a bit lonely here...</string>
+
+    <!-- Texto de legenda para a view vazia, que solicita que o usuário adicione um pet [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Get started by adding a pet</string>
 </resources>
