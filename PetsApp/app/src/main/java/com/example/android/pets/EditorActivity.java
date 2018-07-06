@@ -15,10 +15,12 @@
  */
 package com.example.android.pets;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,6 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -74,6 +77,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private long mId = 0;
 
+    private boolean mHasChanges = false;
+
+    private View.OnTouchListener mListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+
+            mHasChanges = true;
+
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +109,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             } else {
 
                 this.setTitle("Add a Pet");
+
+                invalidateOptionsMenu();
             }
         }
 
@@ -102,6 +119,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mBreedEditText = (EditText) findViewById(R.id.edit_pet_breed);
         mWeightEditText = (EditText) findViewById(R.id.edit_pet_weight);
         mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
+
+        mNameEditText.setOnTouchListener(mListener);
+        mBreedEditText.setOnTouchListener(mListener);
+        mWeightEditText.setOnTouchListener(mListener);
+        mGenderSpinner.setOnTouchListener(mListener);
 
         setupSpinner();
     }
@@ -195,6 +217,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
+
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
 
@@ -206,16 +229,83 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
 
+                DialogInterface.OnClickListener l = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        getContentResolver().delete(ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI, mId), null, null);
+
+                        NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    }
+                };
+
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
 
-                NavUtils.navigateUpFromSameTask(this);
+                if (!mHasChanges) {
+
+                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+
+                    return true;
+                }
+
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // Usuário clidou no botão "Discard", e navegou para a activity pai.
+                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                            }
+                        };
+
+                // Mostra um diálogo que notifica o usuário de que há alterações não salvas
+                showUnsavedChangesDialog(discardButtonClickListener);
 
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    public void onBackPressed() {
+
+        if (!mHasChanges) {
+            super.onBackPressed();
+
+            return;
+        }
+
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // User clicou no botão "Discard", fecha a activity atual.
+                        finish();
+                    }
+                };
+
+        // Mostra o diálogo que diz que há mudanças não salvas
+        showUnsavedChangesDialog(discardButtonClickListener);
+
+
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // If this is a new pet, hide the "Delete" menu item.
+        if (mId == 0) {
+
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+
+            menuItem.setVisible(false);
+        }
+
+        return true;
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -226,15 +316,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
-        cursor.moveToFirst();
 
-        mNameEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.NAME_COLUMN_NAME)));
+        if (cursor.moveToFirst()) {
 
-        mBreedEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.BREED_COLUMN_NAME)));
+            mNameEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.NAME_COLUMN_NAME)));
 
-        mWeightEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.WEIGHT_COLUMN_NAME)));
+            mBreedEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.BREED_COLUMN_NAME)));
 
-        mGenderSpinner.setSelection(cursor.getInt(cursor.getColumnIndex(PetContract.PetEntry.GENDER_COLUMN_NAME)));
+            mWeightEditText.setText(cursor.getString(cursor.getColumnIndex(PetContract.PetEntry.WEIGHT_COLUMN_NAME)));
+
+            mGenderSpinner.setSelection(cursor.getInt(cursor.getColumnIndex(PetContract.PetEntry.GENDER_COLUMN_NAME)));
+        }
     }
 
     @Override
@@ -248,4 +340,54 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         mGenderSpinner.setSelection(0);
     }
+
+
+    private void showUnsavedChangesDialog(DialogInterface.OnClickListener discardButtonClickListener) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(R.string.unsaved_changes_dialog_msg);
+
+        builder.setPositiveButton(R.string.discard, discardButtonClickListener);
+
+        builder.setCancelable(false);
+
+        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (dialogInterface != null) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    private void confirmDeletePet(DialogInterface.OnClickListener discardButtonClickListener) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(R.string.confirm_delete_pet);
+
+        builder.setPositiveButton(R.string.delete, discardButtonClickListener);
+
+        builder.setCancelable(false);
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (dialogInterface != null) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
 }
+

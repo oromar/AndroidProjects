@@ -63,4 +63,18 @@
 
     <!-- Texto de legenda para a view vazia, que solicita que o usuário adicione um pet [CHAR LIMIT=50] -->
     <string name="empty_view_subtitle_text">Get started by adding a pet</string>
+
+    <!-- Mensagem de caixa de diálogo de quando o usuário está saindo do editor, mas não salvou as alterações [CHAR LIMIT=NONE] -->
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+
+    <!-- Texto de botão de diálogo para a opção de descartar uma alteração do usuário [CHAR LIMIT=20] -->
+    <string name="discard">Discard</string>
+
+    <!-- Texto de botão de diálogo para a opção de continuar editando o pet atual [CHAR LIMIT=20] -->
+    <string name="keep_editing">Keep Editing</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="confirm_delete_pet">Confirm?</string>
+    <string name="unknown_breed">Unknown Breed</string>
+
 </resources>

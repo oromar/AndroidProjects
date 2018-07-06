@@ -15,10 +15,12 @@
  */
 package com.example.android.pets;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -129,7 +131,14 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
 
-                getContentResolver().delete(PetEntry.CONTENT_URI, null, null);
+                AlertDialog.OnClickListener listener = new AlertDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        getContentResolver().delete(PetEntry.CONTENT_URI, null, null);
+                    }
+                };
+
+                showConfirmDeleteAllDialog(listener);
 
                 return true;
         }
@@ -152,5 +161,31 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
 
         mCursorAdapter.swapCursor(null);
+    }
+
+    private void showConfirmDeleteAllDialog(AlertDialog.OnClickListener positiveButtonListener) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(R.string.confirm_delete_pet);
+
+        builder.setCancelable(false);
+
+        builder.setPositiveButton(R.string.delete, positiveButtonListener);
+
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                if (dialogInterface != null) {
+
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 }

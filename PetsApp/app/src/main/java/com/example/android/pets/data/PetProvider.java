@@ -153,7 +153,7 @@ public class PetProvider extends ContentProvider {
 
                 String[] selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
 
-                deletedRows = db.delete(PetContract.PetEntry.TABLE_NAME,selection, selectionArgs);
+                deletedRows = db.delete(PetContract.PetEntry.TABLE_NAME, selection, selectionArgs);
 
                 break;
 
