@@ -15,8 +15,10 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +34,8 @@ import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract;
 import com.example.android.pets.data.PetDBHelper;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -139,15 +143,13 @@ public class EditorActivity extends AppCompatActivity {
 
         try {
 
-            SQLiteDatabase database = new PetDBHelper(this).getWritableDatabase();
+            Uri uri = getContentResolver().insert(PetContract.PetEntry.CONTENT_URI, contentValues);
 
-            long id = database.insert(PetContract.PetEntry.TABLE_NAME, null, contentValues);
-
-            Toast.makeText(this, "Pet saved with id: " + id, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Pet saved with id: " + ContentUris.parseId(uri), LENGTH_SHORT).show();
 
         } catch (Exception e) {
 
-            Toast.makeText(this, "Error with saving pet.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error with saving pet.", LENGTH_SHORT).show();
         }
     }
 

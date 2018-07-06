@@ -62,7 +62,7 @@ public class CatalogActivity extends AppCompatActivity {
         // To access our database, we instantiate our subclass of SQLiteOpenHelper
         // and pass the context, which is the current activity.
 
-        Cursor cursor = new PetProvider()
+        Cursor cursor = getContentResolver()
                 .query(PetEntry.CONTENT_URI, null, null, null, null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
@@ -84,7 +84,7 @@ public class CatalogActivity extends AppCompatActivity {
             int nameColumnIndex = cursor.getColumnIndex(PetEntry.NAME_COLUMN_NAME);
 
             // Iterate through all the returned rows in the cursor
-            while (cursor.moveToNext()) {
+            while(cursor.moveToNext()) {
                 // Use that index to extract the String or Int value of the word
                 // at the current row the cursor is on.
                 int currentID = cursor.getInt(idColumnIndex);
@@ -93,6 +93,7 @@ public class CatalogActivity extends AppCompatActivity {
                 displayView.append(("\n" + currentID + " - " +
                         currentName));
             }
+
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
             // resources and makes it invalid.

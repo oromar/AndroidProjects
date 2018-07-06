@@ -10,6 +10,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.sql.SQLData;
+import java.sql.SQLInput;
+
 public class PetProvider extends ContentProvider {
 
     private static final String LOG_TAG = PetProvider.class.getName();
@@ -47,9 +50,9 @@ public class PetProvider extends ContentProvider {
                         @Nullable String[] selectionArgs,
                         @Nullable String sortOrder) {
 
-        SQLiteDatabase db = mPetDbHelper.getReadableDatabase();
-
         Cursor cursor = null;
+
+        SQLiteDatabase db = mPetDbHelper.getReadableDatabase();
 
         if (sortOrder == null || sortOrder.isEmpty()) {
 
@@ -64,7 +67,7 @@ public class PetProvider extends ContentProvider {
 
                 selection = PetContract.PetEntry._ID + "=?";
 
-                selectionArgs = new String [] { String.valueOf(ContentUris.parseId(uri)) };
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 
                 cursor = db.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 
@@ -95,7 +98,20 @@ public class PetProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
 
-        return null;
+        SQLiteDatabase db = mPetDbHelper.getWritableDatabase();
+
+        long id = 0;
+
+        switch (mUriMatcher.match(uri)) {
+
+            case PETS:
+
+                id = (long) db.insert(PetContract.PetEntry.TABLE_NAME, null, contentValues);
+
+                break;
+        }
+
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
