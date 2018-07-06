@@ -1,10 +1,15 @@
 package com.example.android.pets.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 public final class PetContract {
 
     private PetContract() { }
+
+    public static final String CONTENT_AUTHORITY = "com.example.android.pets";
+
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String TEXT_COLUMN_TYPE = "TEXT";
 
@@ -13,6 +18,8 @@ public final class PetContract {
     public static final class PetEntry implements BaseColumns {
 
         public static final String TABLE_NAME = "pets";
+
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, TABLE_NAME);
 
         public static final String NAME_COLUMN_NAME = "name";
 
@@ -27,6 +34,9 @@ public final class PetContract {
         public static final int GENDER_FEMALE = 2;
 
         public static final int GENDER_UNKNOWN = 3;
+
+        public static final String[] PROJECTION_COLUMNS =
+                new String [] { _ID, NAME_COLUMN_NAME, BREED_COLUMN_NAME, GENDER_COLUMN_NAME, WEIGHT_COLUMN_NAME };
 
     }
 }
