@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.Set;
+
 public class DetailActivity extends AppCompatActivity {
 
     private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
@@ -54,6 +56,19 @@ public class DetailActivity extends AppCompatActivity {
         menuItem.setIntent(createShareForecastIntent());
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings_details) {
+            Intent intent = new Intent(DetailActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     // TODO (7) Launch SettingsActivity when the Settings option is clicked
 }

@@ -29,8 +29,6 @@ import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.utilities.NetworkUtils;
 import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 
-import org.w3c.dom.Text;
-
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {

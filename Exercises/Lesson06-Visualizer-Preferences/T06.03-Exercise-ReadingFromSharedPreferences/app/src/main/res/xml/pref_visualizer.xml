@@ -9,4 +9,32 @@
         android:summaryOn="Shown"
         android:title="Show Bass" />
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="show_treble"
+        android:summaryOff="Hidden"
+        android:summaryOn="Shown"
+        android:title="Show Treble" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="show_mid"
+        android:summaryOff="Hidden"
+        android:summaryOn="Shown"
+        android:title="Show Mid" />
+
+    <EditTextPreference
+        android:defaultValue="@string/pref_size_default_value"
+        android:key="@string/pref_size_key"
+        android:title="@string/pref_size_label"
+        android:inputType="numberDecimal"
+        />
+
+    <ListPreference
+        android:defaultValue="@string/pref_color_red_value"
+        android:entries="@array/colors_label"
+        android:entryValues="@array/colors_value"
+        android:key="color"
+        android:title="Color"
+        />
 </PreferenceScreen>

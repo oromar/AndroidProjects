@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="colors_label">
+        <item>
+            @string/pref_color_red_label
+        </item>
+        <item>
+            @string/pref_color_blue_label
+        </item>
+        <item>
+            @string/pref_color_green_label
+        </item>
+    </array>
+
+    <array name="colors_value">
+        <item>
+            @string/pref_color_red_value
+        </item>
+        <item>
+            @string/pref_color_blue_value
+        </item>
+        <item>
+            @string/pref_color_green_value
+        </item>
+    </array>
+
+</resources>

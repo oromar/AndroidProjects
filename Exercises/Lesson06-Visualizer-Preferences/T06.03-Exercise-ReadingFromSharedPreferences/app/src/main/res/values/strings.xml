@@ -8,6 +8,22 @@
           - - - - - - - - - - - - - - - -->
 
     <!-- Value in SharedPreferences for red color option -->
+    <string name="pref_color_red_label" translatable="false">Red</string>
+
+    <!-- Value in SharedPreferences for blue color option -->
+    <string name="pref_color_blue_label" translatable="false">Blue</string>
+
+    <!-- Value in SharedPreferences for green color option -->
+    <string name="pref_color_green_label" translatable="false">Green</string>
+
+    <string name="pref_color_red_key" translatable="false">red</string>
+
+    <!-- Value in SharedPreferences for blue color option -->
+    <string name="pref_color_blue_key" translatable="false">blue</string>
+
+    <!-- Value in SharedPreferences for green color option -->
+    <string name="pref_color_green_key" translatable="false">green</string>
+
     <string name="pref_color_red_value" translatable="false">red</string>
 
     <!-- Value in SharedPreferences for blue color option -->
@@ -15,4 +31,10 @@
 
     <!-- Value in SharedPreferences for green color option -->
     <string name="pref_color_green_value" translatable="false">green</string>
+
+    <string name="pref_size_key" translatable="false">pref_size</string>
+    <string name="pref_size_label" translatable="false">Size</string>
+    <string name="pref_size_default_value" translatable="false">1</string>
+
+
 </resources>
