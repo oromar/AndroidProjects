@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.example.android.sunshine"
@@ -20,10 +20,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:25.1.0'
+    implementation 'com.android.support:preference-v7:25.0.0'
 
-    compile 'com.android.support:recyclerview-v7:25.0.1'
+    implementation 'com.android.support:recyclerview-v7:25.0.1'
     // TODO (1) Add preferences dependency to gradle
 
     // Instrumentation dependencies use androidTestCompile

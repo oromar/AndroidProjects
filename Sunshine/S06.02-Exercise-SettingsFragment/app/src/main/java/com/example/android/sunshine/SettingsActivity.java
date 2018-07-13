@@ -17,6 +17,7 @@ package com.example.android.sunshine;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
 import android.view.MenuItem;
 
 /**
@@ -39,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         // TODO (10) Implement OnSharedPreferenceChangeListener from SettingsFragment
 
         // TODO (8) Create a method called setPreferenceSummary that accepts a Preference and an Object and sets the summary of the preference
+
 
         // TODO (5) Override onCreatePreferences and add the preference xml file using addPreferencesFromResource
 

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +12,19 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
--->
-<!-- TODO (7) Make the SettingsFragment the root layout for SettingsActivity -->
+--><!-- TODO (7) Make the SettingsFragment the root layout for SettingsActivity -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/weather_settings_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+
+    <fragment
+
+        android:id="@+id/weather_settings_container"
+        android:name="com.example.android.sunshine.SettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</FrameLayout>
+
